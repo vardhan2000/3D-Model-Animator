@@ -14,13 +14,17 @@ const renderer = new WebGLRenderer();
 renderer.setSize( 600, 600 );
 document.body.appendChild( renderer.domElement );
 
+window.viewMatrix = mat4.create();
+window.eye = [0,0,6]; // 
+window.up = [0,1,0];
+
+mat4.lookAt(window.viewMatrix,eye,[0,0,0],up);
+
+window.projMatrix = mat4.create();
+mat4.perspective(window.projMatrix,45*Math.PI/180,1,0.1,1000);
+
 const shader = new Shader(renderer.glContext(), vertexShaderSrc, fragmentShaderSrc);
 shader.use();
-
-window.viewMatrix = mat4.create();
-window.projMatrix = mat4.create();
-window.eye = [-10,10,-15];
-window.up = [0,1,0];
 
 let mode = 0
 
@@ -110,10 +114,14 @@ window.onload = () => {
 					cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
 				});
 
+				window.eye = [0,0,6];
+
 			} else {
 				for(let i=0; i<6; i++){
 					gui.remove(items[i]);
 				}
+				window.eye = [0,0,5];
+
 			}		
 		
 			console.log("mode = ", mode)
