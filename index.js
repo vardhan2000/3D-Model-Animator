@@ -2,6 +2,7 @@ import { Scene, Cube, WebGLRenderer, Shader } from './lib/threeD.js';
 import {vertexShaderSrc} from './shaders/vertex.js';
 import {fragmentShaderSrc} from './shaders/fragment.js';
 import * as dat from 'https://cdn.skypack.dev/dat.gui';
+import { vec3, mat4 } from 'https://cdn.skypack.dev/gl-matrix';
 
 const scene = new Scene();
 
@@ -16,10 +17,10 @@ document.body.appendChild( renderer.domElement );
 const shader = new Shader(renderer.glContext(), vertexShaderSrc, fragmentShaderSrc);
 shader.use();
 
-// window.viewMatrix = mat4.create();
-// window.projMatrix = mat4.create();
-// window.eye = [-10,10,-15];
-// window.up = [0,1,0];
+window.viewMatrix = mat4.create();
+window.projMatrix = mat4.create();
+window.eye = [-10,10,-15];
+window.up = [0,1,0];
 
 let mode = 0
 
@@ -29,7 +30,8 @@ const transformSettings = {
 	translateZ: 0.0,
 	rotate_X: 0,
 	rotate_Y: 0,
-	rotate_Z: 0
+	rotate_Z: 0,
+	scale: 1
 }
 
 const gui = new dat.GUI();
@@ -107,6 +109,7 @@ window.onload = () => {
 				{
 					cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
 				});
+
 			} else {
 				for(let i=0; i<6; i++){
 					gui.remove(items[i]);
@@ -114,6 +117,14 @@ window.onload = () => {
 			}		
 		
 			console.log("mode = ", mode)
+		}
+
+		else if(event.key=="+"){
+			cube.transform.scale = cube.transform.scale.map(x=>x*1.1)
+		}
+
+		else if(event.key=="-"){
+			cube.transform.scale = cube.transform.scale.map(x=>x/1.1)
 		}
 	}, true
 	);
