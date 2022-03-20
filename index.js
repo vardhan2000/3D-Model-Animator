@@ -16,7 +16,12 @@ document.body.appendChild( renderer.domElement );
 const shader = new Shader(renderer.glContext(), vertexShaderSrc, fragmentShaderSrc);
 shader.use();
 
-const gui = new dat.GUI();
+// window.viewMatrix = mat4.create();
+// window.projMatrix = mat4.create();
+// window.eye = [-10,10,-15];
+// window.up = [0,1,0];
+
+let mode = 0
 
 const transformSettings = {
 	translateX: 0.0,
@@ -27,59 +32,93 @@ const transformSettings = {
 	rotate_Z: 0
 }
 
-gui.add(transformSettings, 'translateX', -1.0, 1.0).step(0.01).onChange(function ()
-{
-	cube.transform.translate = [transformSettings.translateX,cube.transform.translate[1],cube.transform.translate[2]]
-});
+const gui = new dat.GUI();
+let items = new Array(6) 
 
-gui.add(transformSettings, 'translateY', -1.0, 1.0).step(0.01).onChange(function ()
-{
-	cube.transform.translate = [cube.transform.translate[0],transformSettings.translateY,cube.transform.translate[2]]
-});
+if(mode==0){
+	items[0] = gui.add(transformSettings, 'translateX', -1.0, 1.0).step(0.01).onChange(function ()
+	{
+		cube.transform.translate = [transformSettings.translateX,cube.transform.translate[1],cube.transform.translate[2]]
+	});
 
-gui.add(transformSettings, 'translateZ', -1.0, 1.0).step(0.01).onChange(function ()
-{
-	cube.transform.translate = [cube.transform.translate[0],cube.transform.translate[1],transformSettings.translateZ]
-});
+	items[1] = gui.add(transformSettings, 'translateY', -1.0, 1.0).step(0.01).onChange(function ()
+	{
+		cube.transform.translate = [cube.transform.translate[0],transformSettings.translateY,cube.transform.translate[2]]
+	});
 
-gui.add(transformSettings, 'rotate_X', -Math.PI, Math.PI).step(0.01).onChange(function ()
-{
-	cube.transform.rotationAngle_X = transformSettings.rotate_X;
-});
+	items[2] = gui.add(transformSettings, 'translateZ', -1.0, 1.0).step(0.01).onChange(function ()
+	{
+		cube.transform.translate = [cube.transform.translate[0],cube.transform.translate[1],transformSettings.translateZ]
+	});
 
-gui.add(transformSettings, 'rotate_Y', -Math.PI, Math.PI).step(0.01).onChange(function ()
-{
-	cube.transform.rotationAngle_Y = transformSettings.rotate_Y;
-});
+	items[3] = gui.add(transformSettings, 'rotate_X', -Math.PI, Math.PI).step(0.01).onChange(function ()
+	{
+		cube.transform.rotationAngle_X = transformSettings.rotate_X;
+	});
 
-gui.add(transformSettings, 'rotate_Z', -Math.PI, Math.PI).step(0.01).onChange(function ()
-{
-	cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
-});
+	items[4] = gui.add(transformSettings, 'rotate_Y', -Math.PI, Math.PI).step(0.01).onChange(function ()
+	{
+		cube.transform.rotationAngle_Y = transformSettings.rotate_Y;
+	});
+
+	items[5] = gui.add(transformSettings, 'rotate_Z', -Math.PI, Math.PI).step(0.01).onChange(function ()
+	{
+		cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
+	});
+}
 
 
-// // mouseX and mouseY are in CSS display space relative to canvas
-// let mouseX = -1;
-// let mouseY = -1;
+window.onload = () => {
+	renderer.getDomElement().addEventListener('click', (event) => {
+    });
 
-// renderer.gl.canvas.addEventListener('mousemove', (e) => {
-// 	const rect = renderer.gl.canvas.getBoundingClientRect();
-// 	mouseX = e.clientX - rect.left;
-// 	mouseY = e.clientY - rect.top;
-// });
+	window.addEventListener('keydown', function (event) {
+        console.log("Key pressed = ", event.key);
 
-// const pixelX = mouseX * renderer.gl.canvas.width / renderer.gl.canvas.clientWidth;
-// const pixelY = renderer.gl.canvas.height - mouseY * renderer.gl.canvas.height / renderer.gl.canvas.clientHeight - 1;
-// const data = new Uint8Array(4);
-// renderer.gl.readPixels(
-//     pixelX,            // x
-//     pixelY,            // y
-//     1,                 // width
-//     1,                 // height
-//     renderer.gl.RGBA,           // format
-//     renderer.gl.UNSIGNED_BYTE,  // type
-//     data);             // typed array to hold result
+		if(event.key=="m"){
+			mode = (mode+=1)%2
+			if(mode==0){
+				items[0] = gui.add(transformSettings, 'translateX', -1.0, 1.0).step(0.01).onChange(function ()
+				{
+					cube.transform.translate = [transformSettings.translateX,cube.transform.translate[1],cube.transform.translate[2]]
+				});
 
+				items[1] = gui.add(transformSettings, 'translateY', -1.0, 1.0).step(0.01).onChange(function ()
+				{
+					cube.transform.translate = [cube.transform.translate[0],transformSettings.translateY,cube.transform.translate[2]]
+				});
+
+				items[2] = gui.add(transformSettings, 'translateZ', -1.0, 1.0).step(0.01).onChange(function ()
+				{
+					cube.transform.translate = [cube.transform.translate[0],cube.transform.translate[1],transformSettings.translateZ]
+				});
+
+				items[3] = gui.add(transformSettings, 'rotate_X', -Math.PI, Math.PI).step(0.01).onChange(function ()
+				{
+					cube.transform.rotationAngle_X = transformSettings.rotate_X;
+				});
+
+				items[4] = gui.add(transformSettings, 'rotate_Y', -Math.PI, Math.PI).step(0.01).onChange(function ()
+				{
+					cube.transform.rotationAngle_Y = transformSettings.rotate_Y;
+				});
+
+				items[5] = gui.add(transformSettings, 'rotate_Z', -Math.PI, Math.PI).step(0.01).onChange(function ()
+				{
+					cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
+				});
+			} else {
+				for(let i=0; i<6; i++){
+					gui.remove(items[i]);
+				}
+			}		
+		
+			console.log("mode = ", mode)
+		}
+	}, true
+	);
+	window.addEventListener
+}
 
 
 renderer.setAnimationLoop( animation );
