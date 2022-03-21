@@ -29,47 +29,28 @@ shader.use();
 let mode = 0
 
 const transformSettings = {
-	translateX: 0.0,
-	translateY: 0.0,
-	translateZ: 0.0,
-	rotate_X: 0,
-	rotate_Y: 0,
-	rotate_Z: 0,
-	scale: 1
+	rotateX: 0,
+	rotateY: 0,
+	rotateZ: 0,
 }
 
-const gui = new dat.GUI();
-let items = new Array(6) 
+const gui0 = new dat.GUI();
+let items0 = new Array(3) 
 
 if(mode==0){
-	items[0] = gui.add(transformSettings, 'translateX', -1.0, 1.0).step(0.01).onChange(function ()
+	items0[0] = gui0.add(transformSettings, 'rotateX', -Math.PI, Math.PI).step(0.01).onChange(function ()
 	{
-		cube.transform.translate = [transformSettings.translateX,cube.transform.translate[1],cube.transform.translate[2]]
+		cube.transform.rotationAngle_X = transformSettings.rotateX;
 	});
 
-	items[1] = gui.add(transformSettings, 'translateY', -1.0, 1.0).step(0.01).onChange(function ()
+	items0[1] = gui0.add(transformSettings, 'rotateY', -Math.PI, Math.PI).step(0.01).onChange(function ()
 	{
-		cube.transform.translate = [cube.transform.translate[0],transformSettings.translateY,cube.transform.translate[2]]
+		cube.transform.rotationAngle_Y = transformSettings.rotateY;
 	});
 
-	items[2] = gui.add(transformSettings, 'translateZ', -1.0, 1.0).step(0.01).onChange(function ()
+	items0[2] = gui0.add(transformSettings, 'rotateZ', -Math.PI, Math.PI).step(0.01).onChange(function ()
 	{
-		cube.transform.translate = [cube.transform.translate[0],cube.transform.translate[1],transformSettings.translateZ]
-	});
-
-	items[3] = gui.add(transformSettings, 'rotate_X', -Math.PI, Math.PI).step(0.01).onChange(function ()
-	{
-		cube.transform.rotationAngle_X = transformSettings.rotate_X;
-	});
-
-	items[4] = gui.add(transformSettings, 'rotate_Y', -Math.PI, Math.PI).step(0.01).onChange(function ()
-	{
-		cube.transform.rotationAngle_Y = transformSettings.rotate_Y;
-	});
-
-	items[5] = gui.add(transformSettings, 'rotate_Z', -Math.PI, Math.PI).step(0.01).onChange(function ()
-	{
-		cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
+		cube.transform.rotationAngle_Z = transformSettings.rotateZ;
 	});
 }
 
@@ -83,55 +64,43 @@ window.onload = () => {
 
 		if(event.key=="m"){
 			mode = (mode+=1)%2
+			console.log("mode = ", mode)
 			if(mode==0){
-				items[0] = gui.add(transformSettings, 'translateX', -1.0, 1.0).step(0.01).onChange(function ()
+				console.log("top view")
+				items0[0] = gui0.add(transformSettings, 'rotateX', -Math.PI, Math.PI).step(0.01).onChange(function ()
 				{
-					cube.transform.translate = [transformSettings.translateX,cube.transform.translate[1],cube.transform.translate[2]]
+					cube.transform.rotationAngle_X = transformSettings.rotateX;
 				});
 
-				items[1] = gui.add(transformSettings, 'translateY', -1.0, 1.0).step(0.01).onChange(function ()
+				items0[1] = gui0.add(transformSettings, 'rotateY', -Math.PI, Math.PI).step(0.01).onChange(function ()
 				{
-					cube.transform.translate = [cube.transform.translate[0],transformSettings.translateY,cube.transform.translate[2]]
+					cube.transform.rotationAngle_Y = transformSettings.rotateY;
 				});
 
-				items[2] = gui.add(transformSettings, 'translateZ', -1.0, 1.0).step(0.01).onChange(function ()
+				items0[2] = gui0.add(transformSettings, 'rotateZ', -Math.PI, Math.PI).step(0.01).onChange(function ()
 				{
-					cube.transform.translate = [cube.transform.translate[0],cube.transform.translate[1],transformSettings.translateZ]
-				});
-
-				items[3] = gui.add(transformSettings, 'rotate_X', -Math.PI, Math.PI).step(0.01).onChange(function ()
-				{
-					cube.transform.rotationAngle_X = transformSettings.rotate_X;
-				});
-
-				items[4] = gui.add(transformSettings, 'rotate_Y', -Math.PI, Math.PI).step(0.01).onChange(function ()
-				{
-					cube.transform.rotationAngle_Y = transformSettings.rotate_Y;
-				});
-
-				items[5] = gui.add(transformSettings, 'rotate_Z', -Math.PI, Math.PI).step(0.01).onChange(function ()
-				{
-					cube.transform.rotationAngle_Z = transformSettings.rotate_Z;
+					cube.transform.rotationAngle_Z = transformSettings.rotateZ;
 				});
 
 				window.eye = [0,0,6];
+				mat4.lookAt(viewMatrix,eye,[0,0,0],up);
 
 			} else {
-				for(let i=0; i<6; i++){
-					gui.remove(items[i]);
+				console.log("3D view")
+				for(let i=0; i<3; i++){
+					gui0.remove(items0[i]);
 				}
-				window.eye = [0,0,5];
+				window.eye = [5,-5,5];
+				mat4.lookAt(viewMatrix,eye,[0,0,0],up);
 
 			}		
-		
-			console.log("mode = ", mode)
 		}
 
-		else if(event.key=="+"){
+		else if(event.key=="+" && mode==0){
 			cube.transform.scale = cube.transform.scale.map(x=>x*1.1)
 		}
 
-		else if(event.key=="-"){
+		else if(event.key=="-" && mode==0){
 			cube.transform.scale = cube.transform.scale.map(x=>x/1.1)
 		}
 	}, true
