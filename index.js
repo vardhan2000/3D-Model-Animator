@@ -1,10 +1,12 @@
-import { Scene, Cube, WebGLRenderer, Shader } from './lib/threeD.js';
+import { Scene, Cube, WebGLRenderer, Shader, Camera } from './lib/threeD.js';
 import {vertexShaderSrc} from './shaders/vertex.js';
 import {fragmentShaderSrc} from './shaders/fragment.js';
 import * as dat from 'https://cdn.skypack.dev/dat.gui';
 import { vec3, mat4 } from 'https://cdn.skypack.dev/gl-matrix';
 
-const scene = new Scene();
+let camera = new Camera();
+
+const scene = new Scene(camera);
 
 const cube = new Cube(0,0);
 
@@ -14,11 +16,11 @@ const renderer = new WebGLRenderer();
 renderer.setSize( 600, 600 );
 document.body.appendChild( renderer.domElement );
 
-window.viewMatrix = mat4.create();
-window.eye = [0,0,6]; // 
-window.up = [0,1,0];
+// window.viewMatrix = mat4.create();
+// window.eye = [0,0,6]; // 
+// window.up = [0,1,0];
 
-mat4.lookAt(window.viewMatrix,eye,[0,0,0],up);
+// mat4.lookAt(window.viewMatrix,eye,[0,0,0],up);
 
 window.projMatrix = mat4.create();
 mat4.perspective(window.projMatrix,45*Math.PI/180,1,0.1,1000);
@@ -34,8 +36,18 @@ const transformSettings = {
 	rotateZ: 0,
 }
 
+
 const gui0 = new dat.GUI();
-let items0 = new Array(3) 
+let items0 = new Array(3)
+
+const cameraSettings = {
+	rotateX: 0,
+	rotateY: 0,
+	rotateZ: 0,
+}
+
+const gui1 = new dat.GUI();
+let items1 = new Array(3);
 
 if(mode==0){
 	items0[0] = gui0.add(transformSettings, 'rotateX', -Math.PI, Math.PI).step(0.01).onChange(function ()
@@ -67,6 +79,10 @@ window.onload = () => {
 			console.log("mode = ", mode)
 			if(mode==0){
 				console.log("top view")
+				for(let i=0; i<3; i++){
+					gui1.remove(items1[i]);
+				}
+
 				items0[0] = gui0.add(transformSettings, 'rotateX', -Math.PI, Math.PI).step(0.01).onChange(function ()
 				{
 					cube.transform.rotationAngle_X = transformSettings.rotateX;
@@ -82,17 +98,32 @@ window.onload = () => {
 					cube.transform.rotationAngle_Z = transformSettings.rotateZ;
 				});
 
-				window.eye = [0,0,6];
-				mat4.lookAt(viewMatrix,eye,[0,0,0],up);
+				camera.transform.eye = [0,0,6];
 
 			} else {
 				console.log("3D view")
 				for(let i=0; i<3; i++){
 					gui0.remove(items0[i]);
 				}
-				window.eye = [5,-5,5];
-				mat4.lookAt(viewMatrix,eye,[0,0,0],up);
 
+				items1[0] = gui1.add(cameraSettings, 'rotateX', 1, Math.PI).step(0.01).onChange(function ()
+				{
+					camera.transform.rotationAngle_X = cameraSettings.rotateX * 0.05;
+					camera.transform.updateViewTransformMatrix();
+				});
+
+				items1[1] = gui1.add(cameraSettings, 'rotateY', 1, Math.PI).step(0.01).onChange(function ()
+				{
+					camera.transform.rotationAngle_Y = cameraSettings.rotateY * 0.05;
+					camera.transform.updateViewTransformMatrix();
+				});
+
+				items1[2] = gui1.add(cameraSettings, 'rotateZ', 1, Math.PI).step(0.01).onChange(function ()
+				{
+					camera.transform.rotationAngle_Z = cameraSettings.rotateZ * 0.05;
+					camera.transform.updateViewTransformMatrix();
+				});
+				camera.transform.eye = [5,-5,5];
 			}		
 		}
 
