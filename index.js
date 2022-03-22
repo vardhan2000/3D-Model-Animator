@@ -90,11 +90,11 @@ const cameraSettings = {
 }
 
 let eye_3DView = [0,0,0];
-const gui1 = new dat.GUI();
-let items1 = new Array(3);
+// const gui1 = new dat.GUI();
+// let items1 = new Array(3);
 let ct = 0
 
-let canvas = renderer.getDomElement();
+// let canvas = renderer.getDomElement();
 let gl = renderer.glContext();
 let pixelColor = new Uint8Array(4);
 let currentShape = null;
@@ -144,9 +144,6 @@ document.addEventListener('keydown', function (event) {
 		console.log("mode = ", mode)
 		if(mode==0){
 			console.log("top view")
-			for(let i=0; i<3; i++){
-				gui1.remove(items1[i]);
-			}
 
 			items0[0] = gui0.add(transformSettings, 'translateX', -1, 1).step(0.01).onChange(function ()
 			{
@@ -180,9 +177,7 @@ document.addEventListener('keydown', function (event) {
 
 			
 			console.log("eye = ", camera.transform.eye);
-			
 			eye_3DView = camera.transform.eye;
-			
 			camera.transform.eye = [0,0,6];
 			camera.transform.rotationAngle_X = 0
 			camera.transform.rotationAngle_Y = 0
@@ -194,24 +189,6 @@ document.addEventListener('keydown', function (event) {
 			for(let i=0; i<6; i++){
 				gui0.remove(items0[i]);
 			}
-
-			items1[0] = gui1.add(cameraSettings, 'rotateX', 1, Math.PI).step(0.01).onChange(function ()
-			{
-				camera.transform.rotationAngle_X = cameraSettings.rotateX * 0.05;
-				camera.transform.updateViewTransformMatrix();
-			});
-
-			items1[1] = gui1.add(cameraSettings, 'rotateY', 1, Math.PI).step(0.01).onChange(function ()
-			{
-				camera.transform.rotationAngle_Y = cameraSettings.rotateY * 0.05;
-				camera.transform.updateViewTransformMatrix();
-			});
-
-			items1[2] = gui1.add(cameraSettings, 'rotateZ', 1, Math.PI).step(0.01).onChange(function ()
-			{
-				camera.transform.rotationAngle_Z = cameraSettings.rotateZ * 0.05;
-				camera.transform.updateViewTransformMatrix();
-			});
 
 			if(ct == 0){
 				camera.transform.eye = [-5,5,-5]
