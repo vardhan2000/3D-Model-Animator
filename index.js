@@ -39,6 +39,10 @@ axisX.transform.scale = [0.424,0.3,0.3];
 axisY.transform.scale = [0.3,0.424,0.3];
 axisZ.transform.scale = [0.3,0.3,0.424];
 
+axisX.selectable = false;
+axisY.selectable = false;
+axisZ.selectable = false;
+
 monkey.transform.scale = [0.3,0.3,0.3]
 torus.transform.scale = [0.3,0.3,0.3]
 cube.transform.scale = [0.3,0.3,0.3]
@@ -211,9 +215,7 @@ document.addEventListener('keydown', function (event) {
 				camera.transform.rotationAngle_Y = 0;
 				camera.transform.rotationAngle_Z = 0;
 			}
-			// console.log("eye_3dView = ", eye_3DView);
-			// camera.transform.eye = eye_3DView;
-			// camera.transform.rotationAngle_Y = 0;
+			
 			camera.transform.updateViewTransformMatrix();
 		}		
 	}
@@ -226,6 +228,51 @@ document.addEventListener('keydown', function (event) {
 		axisZ.transform.scale = axisZ.transform.scale.map(x=>x/1.1)
 	}
 }, false );
+
+let canvas = renderer.getDomElement();
+let gl = renderer.glContext();
+let pixelColor = new Uint8Array(4);
+let currentShape = null;
+let mouseX
+let mouseY
+
+renderer.getDomElement().addEventListener('mousedown', (event) => {
+	if(mode==0){
+		const rect = renderer.getDomElement().getBoundingClientRect();
+
+		mouseX = event.clientX - rect.left;
+		mouseY = event.clientY - rect.top;
+
+		const pixelX = mouseX * gl.canvas.width / gl.canvas.clientWidth;
+		const pixelY = gl.canvas.height - mouseY * gl.canvas.height / gl.canvas.clientHeight - 1;
+
+		renderer.render(scene,shader);
+
+		gl.readPixels(
+			pixelX,            // x
+			pixelY,            // y
+			1,                 // width
+			1,                 // height
+			gl.RGBA,           // format
+			gl.UNSIGNED_BYTE,  // type
+			pixelColor         // typed array to hold result
+		);
+		console.log("pixelColor = ",pixelColor)
+
+		let s = currentShape;
+		currentShape = scene.selectShape(pixelColor);
+
+		if(s != undefined)
+			s.color = temp.originalColor;
+
+		if(currentShape == undefined){
+			console.log("No shape selected");
+		}
+		else {
+			currentShape.color = [0,0,0,1];
+		}
+	}
+});
 
 renderer.setAnimationLoop( animation );
 
