@@ -35,9 +35,9 @@ let mesh_cube = await meshObject('./cube.obj');
 let cube = new Shape(mesh_cube,[0.039, 0.796, 0.933,1]); // light blue
 
 
-axisX.transform.scale = [0.424,0.424,0.424];
-axisY.transform.scale = [0.424,0.424,0.424];
-axisZ.transform.scale = [0.424,0.424,0.424];
+axisX.transform.scale = [0.424,0.3,0.3];
+axisY.transform.scale = [0.3,0.424,0.3];
+axisZ.transform.scale = [0.3,0.3,0.424];
 
 monkey.transform.scale = [0.3,0.3,0.3]
 torus.transform.scale = [0.3,0.3,0.3]
@@ -85,8 +85,10 @@ const cameraSettings = {
 	rotateZ: 0,
 }
 
+let eye_3DView = [0,0,0];
 const gui1 = new dat.GUI();
 let items1 = new Array(3);
+let ct = 0
 
 if(mode==0){
 	items0[0] = gui0.add(transformSettings, 'translateX', -1, 1).step(0.01).onChange(function ()
@@ -164,7 +166,16 @@ document.addEventListener('keydown', function (event) {
 				axisZ.transform.rotationAngle_Z = transformSettings.rotateZ;
 			});
 
+			
+			console.log("eye = ", camera.transform.eye);
+			
+			eye_3DView = camera.transform.eye;
+			
 			camera.transform.eye = [0,0,6];
+			camera.transform.rotationAngle_X = 0
+			camera.transform.rotationAngle_Y = 0
+			camera.transform.rotationAngle_Z = 0
+			camera.transform.updateViewTransformMatrix();
 
 		} else {
 			console.log("3D view")
@@ -189,7 +200,21 @@ document.addEventListener('keydown', function (event) {
 				camera.transform.rotationAngle_Z = cameraSettings.rotateZ * 0.05;
 				camera.transform.updateViewTransformMatrix();
 			});
-			camera.transform.eye = [5,-5,5];
+
+			if(ct == 0){
+				camera.transform.eye = [-5,5,-5]
+				ct = 1
+			}
+			else {
+				camera.transform.eye = eye_3DView;
+				camera.transform.rotationAngle_X = 0;
+				camera.transform.rotationAngle_Y = 0;
+				camera.transform.rotationAngle_Z = 0;
+			}
+			// console.log("eye_3dView = ", eye_3DView);
+			// camera.transform.eye = eye_3DView;
+			// camera.transform.rotationAngle_Y = 0;
+			camera.transform.updateViewTransformMatrix();
 		}		
 	}
 
