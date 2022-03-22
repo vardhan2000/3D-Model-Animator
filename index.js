@@ -100,6 +100,7 @@ let pixelColor = new Uint8Array(4);
 let currentShape = null;
 let mouseX
 let mouseY
+let mouseTrack = false;
 
 if(mode==0){
 	items0[0] = gui0.add(transformSettings, 'translateX', -1, 1).step(0.01).onChange(function ()
@@ -236,6 +237,7 @@ document.addEventListener('keydown', function (event) {
 	}
 }, false );
 
+let initialMousePosition
 
 renderer.getDomElement().addEventListener('mousedown', (event) => {
 	if(mode==0){
@@ -272,6 +274,22 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 		else {
 			currentShape.color = [0,0,0,1];
 		}
+	} 
+
+	else if(mode ==1) {
+		if(mouseTrack){
+			mouseTrack = false;
+		} else {
+			mouseTrack = true;
+		}
+		initialMousePosition = event.clientX
+	}
+});
+
+renderer.getDomElement().addEventListener('mousemove', (event) => {
+	if(mouseTrack && mode==1){
+		camera.transform.rotationAngle_Y = -0.004 * (event.clientX - initialMousePosition);
+		camera.transform.updateViewTransformMatrix();
 	}
 });
 
