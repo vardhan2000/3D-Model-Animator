@@ -94,35 +94,42 @@ const gui1 = new dat.GUI();
 let items1 = new Array(3);
 let ct = 0
 
+let canvas = renderer.getDomElement();
+let gl = renderer.glContext();
+let pixelColor = new Uint8Array(4);
+let currentShape = null;
+let mouseX
+let mouseY
+
 if(mode==0){
 	items0[0] = gui0.add(transformSettings, 'translateX', -1, 1).step(0.01).onChange(function ()
 	{
-		axisZ.transform.translate = [transformSettings.translateX,axisZ.transform.translate[1],axisZ.transform.translate[2]];
+		currentShape.transform.translate = [transformSettings.translateX,currentShape.transform.translate[1],currentShape.transform.translate[2]];
 	});
 
 	items0[1] = gui0.add(transformSettings, 'translateY', -1, 1).step(0.01).onChange(function ()
 	{
-		axisZ.transform.translate = [axisZ.transform.translate[0], transformSettings.translateY, axisZ.transform.translate[2]];
+		currentShape.transform.translate = [currentShape.transform.translate[0], transformSettings.translateY, currentShape.transform.translate[2]];
 	});
 
 	items0[2] = gui0.add(transformSettings, 'translateZ', -1, 1).step(0.01).onChange(function ()
 	{
-		axisZ.transform.translate = [axisZ.transform.translate[0], axisZ.transform.translate[1], transformSettings.translateZ];
+		currentShape.transform.translate = [currentShape.transform.translate[0], currentShape.transform.translate[1], transformSettings.translateZ];
 	});
 
 	items0[3] = gui0.add(transformSettings, 'rotateX', -Math.PI, Math.PI).step(0.01).onChange(function ()
 	{
-		axisZ.transform.rotationAngle_X = transformSettings.rotateX;
+		currentShape.transform.rotationAngle_X = transformSettings.rotateX;
 	});
 
 	items0[4] = gui0.add(transformSettings, 'rotateY', -Math.PI, Math.PI).step(0.01).onChange(function ()
 	{
-		axisZ.transform.rotationAngle_Y = transformSettings.rotateY;
+		currentShape.transform.rotationAngle_Y = transformSettings.rotateY;
 	});
 
 	items0[5] = gui0.add(transformSettings, 'rotateZ', -Math.PI, Math.PI).step(0.01).onChange(function ()
 	{
-		axisZ.transform.rotationAngle_Z = transformSettings.rotateZ;
+		currentShape.transform.rotationAngle_Z = transformSettings.rotateZ;
 	});
 }
 
@@ -142,32 +149,32 @@ document.addEventListener('keydown', function (event) {
 
 			items0[0] = gui0.add(transformSettings, 'translateX', -1, 1).step(0.01).onChange(function ()
 			{
-				axisZ.transform.translate = [transformSettings.translateX,axisZ.transform.translate[1],axisZ.transform.translate[2]];
+				currentShape.transform.translate = [transformSettings.translateX,currentShape.transform.translate[1],currentShape.transform.translate[2]];
 			});
 
 			items0[1] = gui0.add(transformSettings, 'translateY', -1, 1).step(0.01).onChange(function ()
 			{
-				axisZ.transform.translate = [axisZ.transform.translate[0], transformSettings.translateY, axisZ.transform.translate[2]];
+				currentShape.transform.translate = [currentShape.transform.translate[0], transformSettings.translateY, currentShape.transform.translate[2]];
 			});
 
 			items0[2] = gui0.add(transformSettings, 'translateZ', -1, 1).step(0.01).onChange(function ()
 			{
-				axisZ.transform.translate = [axisZ.transform.translate[0], axisZ.transform.translate[1], transformSettings.translateZ];
+				currentShape.transform.translate = [currentShape.transform.translate[0], currentShape.transform.translate[1], transformSettings.translateZ];
 			});
 
 			items0[3] = gui0.add(transformSettings, 'rotateX', -Math.PI, Math.PI).step(0.01).onChange(function ()
 			{
-				axisZ.transform.rotationAngle_X = transformSettings.rotateX;
+				currentShape.transform.rotationAngle_X = transformSettings.rotateX;
 			});
 
 			items0[4] = gui0.add(transformSettings, 'rotateY', -Math.PI, Math.PI).step(0.01).onChange(function ()
 			{
-				axisZ.transform.rotationAngle_Y = transformSettings.rotateY;
+				currentShape.transform.rotationAngle_Y = transformSettings.rotateY;
 			});
 
 			items0[5] = gui0.add(transformSettings, 'rotateZ', -Math.PI, Math.PI).step(0.01).onChange(function ()
 			{
-				axisZ.transform.rotationAngle_Z = transformSettings.rotateZ;
+				currentShape.transform.rotationAngle_Z = transformSettings.rotateZ;
 			});
 
 			
@@ -221,20 +228,14 @@ document.addEventListener('keydown', function (event) {
 	}
 
 	else if(event.key=="+" && mode==0){
-		axisZ.transform.scale = axisZ.transform.scale.map(x=>x*1.1)
+		currentShape.transform.scale = currentShape.transform.scale.map(x=>x*1.1)
 	}
 
 	else if(event.key=="-" && mode==0){
-		axisZ.transform.scale = axisZ.transform.scale.map(x=>x/1.1)
+		currentShape.transform.scale = currentShape.transform.scale.map(x=>x/1.1)
 	}
 }, false );
 
-let canvas = renderer.getDomElement();
-let gl = renderer.glContext();
-let pixelColor = new Uint8Array(4);
-let currentShape = null;
-let mouseX
-let mouseY
 
 renderer.getDomElement().addEventListener('mousedown', (event) => {
 	if(mode==0){
@@ -263,7 +264,7 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 		currentShape = scene.selectShape(pixelColor);
 
 		if(s != undefined)
-			s.color = temp.originalColor;
+			s.color = s.originalColor;
 
 		if(currentShape == undefined){
 			console.log("No shape selected");
