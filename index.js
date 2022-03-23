@@ -282,9 +282,6 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 		{
 			numClicks++;
 			p0 = [currentShape.transform.translate[0],currentShape.transform.translate[1],0];
-			
-			// p0 = clipToWorld(p0)
-			// console.log(p0)
 			p1 = mouseToWorld([event.clientX,event.clientY]);
 		}
 		else if(numClicks == 1)
@@ -367,11 +364,6 @@ function animatingSelectedObject()
 			currentShape.transform.translate[0] = tempX;
 			currentShape.transform.translate[1] = tempY;
 			currentShape.transform.translate[2] = tempZ;
-			console.log("shape color = ", currentShape.color)
-			if(t>=0.995){
-				let a = 1
-			}
-			console.log("t = ", t)
 			t += increment;
 		}
 		else
@@ -379,9 +371,6 @@ function animatingSelectedObject()
 			t=0;
 			animation_on = false;
 			increment = 0.005;
-			// if(currentShape != undefined)
-				// currentShape.color = currentShape.original_color;
-			// console.log("temp shape color = ", currentShape.color)
 			
 			currentShape = undefined;
 			p0 = undefined;
