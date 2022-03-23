@@ -329,37 +329,30 @@ function mouseToWorld(mouse)
 	return clipToWorld(renderer.mouseToClipCoord(mouse[0],mouse[1],0))
 }
 
-function animatingSelectedObject()
+function animateShape()
 {
-	if(currentShape == undefined)
+	if(currentShape == undefined || p0 == undefined || p1 == undefined || p2 == undefined || !animation_on)
 		return;
-	if(p0 == undefined || p1 == undefined || p2 == undefined)
-		return;
-	if(!animation_on)
-		return;
+	
 	else if(animation_on)
 	{
 		if(t<1)
 		{
-			let a_x = 2*p0[0] + 2*p2[0] - 4*p1[0];
-			let b_x = 4*p1[0] -   p2[0] - 3*p0[0];
-			let c_x = p0[0];
+			let ax = 2*p0[0]+2*p2[0]-4*p1[0];
+			let ay = 2*p0[1]+2*p2[1]-4*p1[1];
+			let az = 2*p0[2]+2*p2[2]-4*p1[2];
+			
+			let bx = 4*p1[0]-3*p0[0]-p2[0];
+			let by = 4*p1[1]-3*p0[1]-p2[1];
+			let bz = 4*p1[2]-3*p0[2]-p2[2];
+			
+			let cx = p0[0];
+			let cy = p0[1];
+			let cz = p0[2];
 
-			let a_y = 2*p0[1] + 2*p2[1] - 4*p1[1];
-			let b_y = 4*p1[1] -   p2[1] - 3*p0[1];
-			let c_y = p0[1];
-
-			let a_z = 2*p0[2] + 2*p2[2] - 4*p1[2];
-			let b_z = 4*p1[2] -   p2[2] - 3*p0[2];
-			let c_z = p0[2];
-
-			let tempX = currentShape.transform.translate[0];
-			let tempY = currentShape.transform.translate[1];
-			let tempZ = currentShape.transform.translate[2];
-
-			tempX = a_x * t * t + b_x * t + c_x;
-			tempY = a_y * t * t + b_y * t + c_y;
-			tempZ = a_z * t * t + b_z * t + c_z;
+			let tempX = ax*t*t + bx*t + cx;
+			let tempY = ay*t*t + by*t + cy;
+			let tempZ = az*t*t + bz*t + cz;
 	
 			currentShape.transform.translate[0] = tempX;
 			currentShape.transform.translate[1] = tempY;
@@ -387,5 +380,5 @@ function animation()
 {
 	renderer.clear(0.9,0.9,0.9,1);
 	renderer.render(scene, shader);	
-	animatingSelectedObject()
+	animateShape()
 }
