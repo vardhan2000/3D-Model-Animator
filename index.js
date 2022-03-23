@@ -59,7 +59,9 @@ scene.add(torus)
 scene.add(cube)
 
 const renderer = new WebGLRenderer();
-renderer.setSize( 600, 600 );
+let renderX = 600
+let renderY = 600
+renderer.setSize( renderX, renderY );
 document.body.appendChild( renderer.domElement );
 
 window.projMatrix = mat4.create();
@@ -90,17 +92,21 @@ const cameraSettings = {
 }
 
 let eye_3DView = [0,0,0];
-// const gui1 = new dat.GUI();
-// let items1 = new Array(3);
 let ct = 0
 
-// let canvas = renderer.getDomElement();
 let gl = renderer.glContext();
 let pixelColor = new Uint8Array(4);
 let currentShape = null;
 let mouseX
 let mouseY
 let mouseTrack = false;
+let animation_on = false
+
+let p0
+let p1
+let p2
+let numClicks = 0
+let t = 0
 
 if(mode==0){
 	items0[0] = gui0.add(transformSettings, 'translateX', -1, 1).step(0.01).onChange(function ()
@@ -212,12 +218,21 @@ document.addEventListener('keydown', function (event) {
 	else if(event.key=="-" && mode==0){
 		currentShape.transform.scale = currentShape.transform.scale.map(x=>x/1.1)
 	}
+
+	else if(event.key == "a" && mode==0){
+		if(animation_on){
+			animation_on = false;
+		} else {
+			animation_on = true;
+		}
+	}
+
 }, false );
 
 let initialMousePosition
 
 renderer.getDomElement().addEventListener('mousedown', (event) => {
-	if(mode==0){
+	if(mode==0 && !animation_on){
 		const rect = renderer.getDomElement().getBoundingClientRect();
 
 		mouseX = event.clientX - rect.left;
@@ -251,7 +266,24 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 		else {
 			currentShape.color = [0,0,0,1];
 		}
-	} 
+	}
+	
+	else if(mode==0 && animation_on)
+	{
+		if(numClicks == 0)
+		{
+			numClicks++;
+			p0 = [currentShape.getCenterX(), currentShape.getCenterY()];
+			p0 = clipToWorld(p0)
+			console.log(p0)
+			p1 = mouseToWorld([event.clientX,event.clientY]);
+		}
+		else if(numClicks == 1)
+		{
+			numClicks = 0;
+			p2 = mouseToWorld([event.clientX,event.clientY]);
+		}
+	}
 
 	else if(mode ==1) {
 		if(mouseTrack){
@@ -265,10 +297,83 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 
 renderer.getDomElement().addEventListener('mousemove', (event) => {
 	if(mouseTrack && mode==1){
-		camera.transform.rotationAngle_Y = -0.004 * (event.clientX - initialMousePosition);
+		camera.transform.rotationAngle_Y = -0.002 * (event.clientX - initialMousePosition);
 		camera.transform.updateViewTransformMatrix();
 	}
 });
+
+function clipToWorld(point)
+{
+	let viewProjMat = mat4.create();
+	mat4.multiply(viewProjMat,window.projMatrix,camera.transform.viewMatrix);
+
+	let invViewProjMat = mat4.create();
+	mat4.invert(invViewProjMat,viewProjMat);
+
+	let pointIn3D = vec3.fromValues(point[0],point[1],0.964);
+	let worldCoor = vec3.create();
+
+	vec3.transformMat4(worldCoor,pointIn3D,invViewProjMat);
+
+	return worldCoor;
+}
+
+function mouseToWorld(mouse)
+{
+	return clipToWorld([(mouse[0])/renderX*2-1,-mouse[1]/renderY*2+1]);
+}
+
+function animatingSelectedObject()
+{
+	if(currentShape == undefined)
+		return;
+	if(p0 == undefined || p1 == undefined || p2 == undefined)
+		return;
+	if(!animation_on)
+		return;
+	else if(animation_on)
+	{
+		if(t<1)
+		{
+			let a_x = 2*p0[0] + 2*p2[0] - 4*p1[0];
+			let b_x = 4*p1[0] -   p2[0] - 3*p0[0];
+			let c_x = p0[0];
+
+			let a_y = 2*p0[1] + 2*p2[1] - 4*p1[1];
+			let b_y = 4*p1[1] -   p2[1] - 3*p0[1];
+			let c_y = p0[1];
+
+			let a_z = 2*p0[2] + 2*p2[2] - 4*p1[2];
+			let b_z = 4*p1[2] -   p2[2] - 3*p0[2];
+			let c_z = p0[2];
+
+			let tempX = currentShape.transform.translate[0];
+			let tempY = currentShape.transform.translate[1];
+			let tempZ = currentShape.transform.translate[2];
+
+			tempX = a_x * t * t + b_x * t + c_x;
+			tempY = a_y * t * t + b_y * t + c_y;
+			tempZ = a_z * t * t + b_z * t + c_z;
+	
+			currentShape.transform.translate[0] = tempX;
+			currentShape.transform.translate[1] = tempY;
+			currentShape.transform.translate[2] = tempZ;
+
+			t +=0.005;
+		}
+		else
+		{
+			t=0;
+			animation_on = false;
+			if(currentShape != undefined)
+				currentShape.color = currentShape.original_color;
+			currentShape = undefined;
+			p0 = undefined;
+			p1 = undefined;
+			p2 = undefined;
+		}
+	}
+}
 
 renderer.setAnimationLoop( animation );
 
@@ -277,4 +382,5 @@ function animation()
 {
 	renderer.clear(0.9,0.9,0.9,1);
 	renderer.render(scene, shader);	
+	animatingSelectedObject()
 }
