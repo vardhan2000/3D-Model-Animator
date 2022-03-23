@@ -358,19 +358,25 @@ function animatingSelectedObject()
 			currentShape.transform.translate[0] = tempX;
 			currentShape.transform.translate[1] = tempY;
 			currentShape.transform.translate[2] = tempZ;
-
+			console.log("shape color = ", currentShape.color)
+			if(t>=0.995){
+				let a = 1
+			}
+			console.log("t = ", t)
 			t +=0.005;
 		}
 		else
 		{
 			t=0;
 			animation_on = false;
-			if(currentShape != undefined)
-				currentShape.color = currentShape.original_color;
-			currentShape = undefined;
-			p0 = undefined;
-			p1 = undefined;
-			p2 = undefined;
+			// if(currentShape != undefined)
+			// 	currentShape.color = currentShape.original_color;
+			// console.log("temp shape color = ", currentShape.color)
+			
+			// currentShape = undefined;
+			// p0 = undefined;
+			// p1 = undefined;
+			// p2 = undefined;
 		}
 	}
 }
