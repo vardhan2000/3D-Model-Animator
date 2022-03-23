@@ -265,10 +265,10 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 		let s = currentShape;
 		currentShape = scene.selectShape(pixelColor);
 
-		if(s != undefined)
+		if(s != null)
 			s.color = s.originalColor;
 
-		if(currentShape == undefined){
+		if(currentShape == null){
 			console.log("No shape selected");
 		}
 		else {
@@ -331,7 +331,7 @@ function mouseToWorld(mouse)
 
 function animateShape()
 {
-	if(currentShape == undefined || p0 == undefined || p1 == undefined || p2 == undefined || !animation_on)
+	if(currentShape == null || p0 == null || p1 == null || p2 == null || !animation_on)
 		return;
 	
 	else if(animation_on)
@@ -365,10 +365,10 @@ function animateShape()
 			animation_on = false;
 			increment = 0.005;
 			
-			currentShape = undefined;
-			p0 = undefined;
-			p1 = undefined;
-			p2 = undefined;
+			currentShape = null;
+			p0 = null;
+			p1 = null;
+			p2 = null;
 		}
 	}
 }
