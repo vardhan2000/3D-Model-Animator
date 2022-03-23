@@ -273,9 +273,10 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 		if(numClicks == 0)
 		{
 			numClicks++;
-			p0 = [currentShape.getCenterX(), currentShape.getCenterY()];
-			p0 = clipToWorld(p0)
-			console.log(p0)
+			p0 = [currentShape.transform.translate[0],currentShape.transform.translate[1],0];
+			
+			// p0 = clipToWorld(p0)
+			// console.log(p0)
 			p1 = mouseToWorld([event.clientX,event.clientY]);
 		}
 		else if(numClicks == 1)
