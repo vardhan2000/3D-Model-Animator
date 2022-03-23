@@ -140,7 +140,7 @@ if(mode==0){
 	});
 }
 
-
+let increment = 0.005
 
 document.addEventListener('keydown', function (event) {
 	console.log("Key pressed = ", event.key);
@@ -225,6 +225,14 @@ document.addEventListener('keydown', function (event) {
 		} else {
 			animation_on = true;
 		}
+	} 
+
+	else if(event.key == "ArrowDown" && animation_on){
+		increment -= 0.0002;
+	}
+
+	else if(event.key == "ArrowUp" && animation_on){
+		increment += 0.0002;
 	}
 
 }, false );
@@ -364,20 +372,21 @@ function animatingSelectedObject()
 				let a = 1
 			}
 			console.log("t = ", t)
-			t +=0.005;
+			t += increment;
 		}
 		else
 		{
 			t=0;
 			animation_on = false;
+			increment = 0.005;
 			// if(currentShape != undefined)
-			// 	currentShape.color = currentShape.original_color;
+				// currentShape.color = currentShape.original_color;
 			// console.log("temp shape color = ", currentShape.color)
 			
-			// currentShape = undefined;
-			// p0 = undefined;
-			// p1 = undefined;
-			// p2 = undefined;
+			currentShape = undefined;
+			p0 = undefined;
+			p1 = undefined;
+			p2 = undefined;
 		}
 	}
 }
