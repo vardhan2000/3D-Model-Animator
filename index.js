@@ -326,7 +326,7 @@ function clipToWorld(point)
 
 function mouseToWorld(mouse)
 {
-	return clipToWorld([(mouse[0])/renderX*2-1,-mouse[1]/renderY*2+1]);
+	return clipToWorld(renderer.mouseToClipCoord(mouse[0],mouse[1],0))
 }
 
 function animatingSelectedObject()
