@@ -81,7 +81,8 @@ const transformSettings = {
 	rotateZ: 0
 }
 
-
+// mode 1 of app = mode 0 in code -> top view mode
+// mode 2 of app = mode 1 in code -> 3D view mode
 const gui0 = new dat.GUI();
 let items0 = new Array(3)
 
@@ -372,14 +373,10 @@ function animateShape()
 			let cx = p0[0];
 			let cy = p0[1];
 			let cz = p0[2];
-
-			let tempX = ax*t*t + bx*t + cx;
-			let tempY = ay*t*t + by*t + cy;
-			let tempZ = az*t*t + bz*t + cz;
 	
-			currentShape.transform.translate[0] = tempX;
-			currentShape.transform.translate[1] = tempY;
-			currentShape.transform.translate[2] = tempZ;
+			currentShape.transform.translate[0] = ax*t*t + bx*t + cx;
+			currentShape.transform.translate[1] = ay*t*t + by*t + cy;
+			currentShape.transform.translate[2] = az*t*t + bz*t + cz;
 			t += increment;
 		}
 		else
