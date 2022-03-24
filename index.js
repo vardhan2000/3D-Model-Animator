@@ -141,6 +141,7 @@ if(mode==0){
 }
 
 let increment = 0.005
+let cameraRotAxis = "y";
 
 document.addEventListener('keydown', function (event) {
 	console.log("Key pressed = ", event.key);
@@ -235,6 +236,18 @@ document.addEventListener('keydown', function (event) {
 		increment += 0.0002;
 	}
 
+	else if(event.key == "x" && mode==1){
+		cameraRotAxis = "x";
+	}
+
+	else if(event.key == "y" && mode==1){
+		cameraRotAxis = "y";
+	}
+
+	else if(event.key == "z" && mode==1){
+		cameraRotAxis = "z";
+	}
+
 }, false );
 
 let initialMousePosition
@@ -296,14 +309,25 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 			mouseTrack = false;
 		} else {
 			mouseTrack = true;
+			if(cameraRotAxis == "y") {
+				initialMousePosition = event.clientX
+			} else if (cameraRotAxis == "x" || cameraRotAxis == "z") {
+				initialMousePosition = event.clientY
+			}
 		}
-		initialMousePosition = event.clientX
 	}
 });
 
 renderer.getDomElement().addEventListener('mousemove', (event) => {
 	if(mouseTrack && mode==1){
-		camera.transform.rotationAngle_Y = -0.002 * (event.clientX - initialMousePosition);
+		if(cameraRotAxis == "y") {
+			camera.transform.rotationAngle_Y = -0.002 * (event.clientX - initialMousePosition);
+		} else if (cameraRotAxis == "x") {
+			camera.transform.rotationAngle_X = -0.002 * (event.clientY - initialMousePosition);
+		} else if (cameraRotAxis == "z") {
+			camera.transform.rotationAngle_Z = -0.002 * (event.clientY - initialMousePosition);
+		}
+		
 		camera.transform.updateViewTransformMatrix();
 	}
 });
