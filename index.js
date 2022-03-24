@@ -321,11 +321,11 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 renderer.getDomElement().addEventListener('mousemove', (event) => {
 	if(mouseTrack && mode==1){
 		if(cameraRotAxis == "y") {
-			camera.transform.rotationAngle_Y = -0.002 * (event.clientX - initialMousePosition);
+			camera.transform.rotationAngle_Y = -0.002 * (event.clientX-initialMousePosition);
 		} else if (cameraRotAxis == "x") {
-			camera.transform.rotationAngle_X = -0.002 * (event.clientY - initialMousePosition);
+			camera.transform.rotationAngle_X = -0.002 * (event.clientY-initialMousePosition);
 		} else if (cameraRotAxis == "z") {
-			camera.transform.rotationAngle_Z = -0.002 * (event.clientY - initialMousePosition);
+			camera.transform.rotationAngle_Z = -0.002 * (event.clientY-initialMousePosition);
 		}
 		
 		camera.transform.updateViewTransformMatrix();
