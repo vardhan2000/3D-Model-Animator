@@ -148,7 +148,7 @@ document.addEventListener('keydown', function (event) {
 
 	if(event.key=="m"){
 		mode = (mode+=1)%2
-		console.log("mode = ", mode)
+		console.log("mode = ", mode+1)
 		if(mode==0){
 			console.log("top view")
 
@@ -273,7 +273,6 @@ renderer.getDomElement().addEventListener('mousedown', (event) => {
 			gl.UNSIGNED_BYTE,  // type
 			pixelColor         // typed array to hold result
 		);
-		console.log("pixelColor = ",pixelColor)
 
 		let s = currentShape;
 		currentShape = scene.selectShape(pixelColor);
