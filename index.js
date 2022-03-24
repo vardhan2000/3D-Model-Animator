@@ -86,11 +86,7 @@ const transformSettings = {
 const gui0 = new dat.GUI();
 let items0 = new Array(3)
 
-const cameraSettings = {
-	rotateX: 0,
-	rotateY: 0,
-	rotateZ: 0,
-}
+
 
 let eye_3DView = [0,0,0];
 let ct = 0
