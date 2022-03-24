@@ -25,14 +25,14 @@ let axisY = new Shape(mesh_AxisY,[0,1,0,1]); // Green=Y
 let mesh_AxisZ = await meshObject('./arrowZ.obj');
 let axisZ = new Shape(mesh_AxisZ,[0,0,1,1]); // Blue=Z
 
-let mesh_monkey = await meshObject('./monkey.obj');
-let monkey = new Shape(mesh_monkey,[1,0.062,0.94,1]); // pink
+let mesh_shape1 = await meshObject('./shape1.obj');
+let shape1 = new Shape(mesh_shape1,[1,0.062,0.94,1]); // pink
 
-let mesh_torus = await meshObject('./torus.obj');
-let torus = new Shape(mesh_torus,[1,0.647,0,1]); // orange
+let mesh_shape2 = await meshObject('./shape2.obj');
+let shape2 = new Shape(mesh_shape2,[1,0.647,0,1]); // orange
 
-let mesh_cube = await meshObject('./cube.obj');
-let cube = new Shape(mesh_cube,[0.039, 0.796, 0.933,1]); // light blue
+let mesh_shape3 = await meshObject('./shape3.obj');
+let shape3 = new Shape(mesh_shape3,[0.039, 0.796, 0.933,1]); // light blue
 
 
 axisX.transform.scale = [0.424,0.3,0.3];
@@ -43,20 +43,20 @@ axisX.selectable = false;
 axisY.selectable = false;
 axisZ.selectable = false;
 
-monkey.transform.scale = [0.3,0.3,0.3]
-torus.transform.scale = [0.3,0.3,0.3]
-cube.transform.scale = [0.3,0.3,0.3]
+shape1.transform.scale = [0.25,0.25,0.25]
+shape2.transform.scale = [0.25,0.25,0.25]
+shape3.transform.scale = [0.6,0.6,0.6]
 
-monkey.transform.translate = [0.7,0.7,0]
-torus.transform.translate = [-0.7,0.7,0]
-cube.transform.translate = [0.7,-0.7,0]
+shape1.transform.translate = [0.7,0.9,0]
+shape2.transform.translate = [-0.7,0.7,0]
+shape3.transform.translate = [0.7,-0.7,0]
 
 scene.add(axisX);
 scene.add(axisY);
 scene.add(axisZ);
-scene.add(monkey)
-scene.add(torus)
-scene.add(cube)
+scene.add(shape1)
+scene.add(shape2)
+scene.add(shape3)
 
 const renderer = new WebGLRenderer();
 let renderX = 600
